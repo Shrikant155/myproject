@@ -4,18 +4,28 @@ pipeline {
     stage('checkout')
            {
        steps {
-         git branch: 'man',
+         git branch: 'main',
          url: 'https://github.com/Shrikant155/myproject.git',
           credentialsId: 'github-cred-id'
        }
      }
-     stage('sonarqube') {
+     stage('usermsg') {
        steps{
         sh '''
            echo "ok i am running" 
          '''
           }
       }
+     stage('sonarqube') {
+            steps {
+                withSonarQubeEnv('mysonarqubeserver') {
+                    sh '''
+                        sonar-scanner
+                    '''
+                }
+            }
+        }
+
    }
 } 
         
