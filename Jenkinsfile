@@ -42,7 +42,8 @@ pipeline {
                 docker rm  trivy-web-app || true
                 docker run -d --name trivy-web-app:latest -p 80:80 trivyapp1:latest
                 '''
-
+               }
+      }
    }
 } 
         
