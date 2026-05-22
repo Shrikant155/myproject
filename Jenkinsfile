@@ -18,9 +18,9 @@ pipeline {
       }
      stage('sonarqube') {
             steps {
-                withSonarQubeEnv('mysonarqubeserver') {
+                withSonarQubeEnv('shrikant-sonar-scanner') {
                     sh '''
-                        /opt/sonar-scanner/bin/sonar-scanner
+                        /opt/sonar-scanner
 
                     '''
                 }
