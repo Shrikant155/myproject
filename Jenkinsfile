@@ -9,14 +9,7 @@ pipeline {
           credentialsId: 'github-cred-id'
        }
      }
-     stage('usermsg') {
-       steps{
-        sh '''
-           echo "ok i am running" 
-         '''
-          }
-      }
-     stage('sonarqube') {
+     stage('sonarqube-test-code') {
             steps {
                 withSonarQubeEnv('shrikant-sonar-scanner') {
                     sh '''
@@ -30,6 +23,25 @@ pipeline {
                 }
             }
         }
+       stage('build-image') {
+        steps {
+             sh 'docker build -t trivyapp1:latest . '
+           }
+      }
+      stage('trivy-scann-image') {
+         steps {
+             sh '''
+                trivy image --exit-code 1 --severity HIGH,CRITICAL trivyapp1:latest
+                '''       
+             }
+      }
+      stage('deploy-local') {
+           steps {
+             sh '''
+                docker stop trivy-web-app || true 
+                docker rm  trivy-web-app || true
+                docker run -d --name trivy-web-app:latest -p 80:80 trivyapp1:latest
+                '''
 
    }
 } 
