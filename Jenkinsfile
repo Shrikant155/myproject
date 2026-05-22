@@ -20,7 +20,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('shrikant-sonar-scanner') {
                     sh '''
-                        /opt/sonar-scanner
+                        /opt/sonar-scanner/bin/sonar-scanner
 
                     '''
                 }
