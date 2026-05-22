@@ -40,7 +40,7 @@ pipeline {
              sh '''
                 docker stop trivy-web-app || true
                 docker rm trivy-web-app || true
-                docker run -d --name trivy-web-app -p 80:80 trivyapp1:latest
+                docker run -d --name trivy-web-app -p 8081:80 trivyapp1:latest
  
 
                 '''
