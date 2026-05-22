@@ -20,12 +20,12 @@ pipeline {
             steps {
                 withSonarQubeEnv('shrikant-sonar-scanner') {
                     sh '''
-                        /opt/sonar-scanner/bin/sonar-scanner
-                        -Dsonar.projectKey=my-devops-project \
-                        -Dsonar.projectName="devops web proejct" \
-                        -Dsonar.sources=. \
-                        -Dsonar.java.binaries=.
-
+                        
+                      /opt/sonar-scanner/bin/sonar-scanner \
+                     -Dsonar.projectKey=my-devops-project \
+                     -Dsonar.projectName="devops web proejct" \
+                     -Dsonar.sources=. \
+                     -Dsonar.java.binaries=.
                     '''
                 }
             }
