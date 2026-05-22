@@ -38,9 +38,11 @@ pipeline {
       stage('deploy-local') {
            steps {
              sh '''
-                docker stop trivy-web-app || true 
-                docker rm  trivy-web-app || true
-                docker run -d --name trivy-web-app:latest -p 80:80 trivyapp1:latest
+                docker stop trivy-web-app || true
+                docker rm trivy-web-app || true
+                docker run -d --name trivy-web-app -p 80:80 trivyapp1:latest
+ 
+
                 '''
                }
       }
