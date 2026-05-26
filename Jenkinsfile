@@ -75,10 +75,11 @@ stage('Start Minikube') {
       mkdir -p zap-reports
 
       chmod 777 zap-reports
-      docker run --rm \
+
+ docker run --rm \
         --network=host \
-        -v $(pwd)/zap-reports:/zap/wrk/:rw \ 
-             -u root \
+        -v $(pwd)/zap-reports:/zap/wrk/:rw \
+        -u root \
         ghcr.io/zaproxy/zaproxy:stable \
         zap-baseline.py \
         -t $APP_URL \
