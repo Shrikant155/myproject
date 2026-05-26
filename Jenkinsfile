@@ -60,7 +60,7 @@ stage('Start Minikube') {
   }
  }
 
- 
+} 
         
 
  
