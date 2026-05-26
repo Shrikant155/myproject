@@ -53,8 +53,11 @@ stage('Start Minikube') {
     steps {
         sh '''
             minikube delete --all --purge || true
-            minikube start --driver=docker --force --wait=all --timeout=300s
+            minikube start --driver=docker --force --wait=all 
             minikube status
+            kubectl apply -f deployment.yaml
+            kubectl apply -f service.yaml
+            minikube service k8s-service --url || true   
         '''
     }
   }
