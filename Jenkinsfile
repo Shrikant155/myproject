@@ -61,9 +61,9 @@ stage('Start Minikube') {
           kubectl rollout status deployment/k8s-project --timeout=120s
 
           # ✅ Fix 2 - wait until pod is READY
-          kubectl wait --for=condition=ready pod \
-            -l app=k8s-project \
-            --timeout=120s
+ kubectl wait --for=condition=ready pod \
+        -l app=myproject1 \
+        --timeout=120s
             kubectl get pods 
            kubectl get svc 
             minikube service k8s-service --url || true 
