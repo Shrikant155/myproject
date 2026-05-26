@@ -71,10 +71,14 @@ stage('Start Minikube') {
                 echo "Scanning app: $APP_URL"
  
           # Step 3 - Run ZAP scan and save report
+       rm -rf zap-reports || true
       mkdir -p zap-reports
+
+      chmod 777 zap-reports
       docker run --rm \
         --network=host \
-        -v $(pwd)/zap-reports:/zap/wrk/:rw \
+        -v $(pwd)/zap-reports:/zap/wrk/:rw \ 
+             -u root \
         ghcr.io/zaproxy/zaproxy:stable \
         zap-baseline.py \
         -t $APP_URL \
@@ -87,7 +91,10 @@ stage('Start Minikube') {
      }
         post {
     always {
-      publishHTML(target: [
+        publishHTML(target: [
+        allowMissing: true,
+        alwaysLinkToLastBuild: true,
+        keepAll: true,
         reportDir: 'zap-reports',
         reportFiles: 'zap-report.html',
         reportName: 'ZAP Security Report'
