@@ -49,22 +49,18 @@ pipeline {
                 }
               }
       }
-      stage('deploy-local') {
-           steps {
-             sh '''
-              #  docker stop trivy-web-app || true
-               # docker rm trivy-web-app || true
-                #docker run -d --name trivy-web-app -p 8081:80 trivyapp1:latest
-                minikube start 
-                kubectl  apply -f deployment.yaml
-                kubectl apply -f service.yaml
-                minikube service k8s-service --url || true
+stage('Start Minikube') {
+    steps {
+        sh '''
+            minikube delete --all --purge || true
+            minikube start --driver=docker --force --wait=all --timeout=300s
+            minikube status
+        '''
+    }
+  }
+ }
 
-                '''
-               }
-      }
-   }
-} 
+ 
         
 
  
