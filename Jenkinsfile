@@ -61,6 +61,43 @@ stage('Start Minikube') {
         '''
     }
   }
+     stage('dast-scan') { 
+      steps {
+          sh '''
+             # zap image install via docker 
+               docker pull ghcr.io/zaproxy/zaproxy:stable
+                #url of running app
+               APP_URL=$(minikube service k8s-service --url)
+                echo "Scanning app: $APP_URL"
+ 
+          # Step 3 - Run ZAP scan and save report
+      mkdir -p zap-reports
+      docker run --rm \
+        --network=host \
+        -v $(pwd)/zap-reports:/zap/wrk/:rw \
+        ghcr.io/zaproxy/zaproxy:stable \
+        zap-baseline.py \
+        -t $APP_URL \
+        -r zap-report.html \
+        -I
+
+      echo "ZAP Scan Done - Report saved in zap-reports/zap-report.html"
+                 
+       '''
+     }
+        post {
+    always {
+      publishHTML(target: [
+        reportDir: 'zap-reports',
+        reportFiles: 'zap-report.html',
+        reportName: 'ZAP Security Report'
+      ])
+    }
+  }
+
+
+     }
+    
  }
 
 } 
