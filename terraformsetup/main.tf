@@ -43,7 +43,7 @@ resource "aws_instance" "shrik_deploy_server" {
     instance_type = "t3.medium"
     key_name = "aws-ssh-key"
     vpc_security_group_ids = [ aws_security_group.shrik_sec_group.id ]
-    
+    user_data = file("install.sh")     
     tags = {
       Name ="deployment_server"
     }
