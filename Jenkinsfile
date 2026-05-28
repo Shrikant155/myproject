@@ -34,6 +34,7 @@ pipeline {
                     --network=host \
                     -v "$PWD:/usr/src" \
                     -e SONAR_TOKEN=$SONAR_TOKEN \
+                     -e SONAR_HOST_URL=http://localhost:9000 \
                     sonarsource/sonar-scanner-cli
             '''
         }
