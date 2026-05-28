@@ -19,30 +19,29 @@ pipeline {
           steps {
                 dir('terraformsetup') {
                     sh '''
+                      terraform destroy --auto-approve || true 
                       terraform init 
                       terraform apply --auto-approve
                       '''
                  }
            }
       }
-
-          
+         stage('sonarqube-test-code') {
+    steps {
+        withCredentials([string(credentialsId: 'sonarqube-cred-id', variable: 'SONAR_TOKEN')]) {
+            sh '''
+                docker run --rm \
+                    --network=host \
+                    -v "$PWD:/usr/src" \
+                    -e SONAR_TOKEN=$SONAR_TOKEN \
+                    sonarsource/sonar-scanner-cli
+            '''
+        }
+    }
+}
+                
       
      
-     stage('sonarqube-test-code') {
-            steps {
-                withSonarQubeEnv('shrikant-sonar-scanner') {
-                    sh '''
-                        
-                      /opt/sonar-scanner/bin/sonar-scanner \
-                     -Dsonar.projectKey=my-devops-project \
-                     -Dsonar.projectName="devops web proejct" \
-                     -Dsonar.sources=. \
-                     -Dsonar.java.binaries=.
-                    '''
-                }
-            }
-        }
        stage('build-image') {
         steps {
              sh 'docker build -t  k8s-app:v5 . '
