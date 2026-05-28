@@ -1,20 +1,33 @@
 pipeline {
   agent any
+  environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+        AWS_DEFAULT_REGION    = 'eu-north-1'  // change to your region
+    }
+  
   stages {
     stage('checkout')
            {
        steps {
          git branch: 'main',
          url: 'https://github.com/Shrikant155/myproject.git',
-          credentialsId: 'hithub-cred-id'
+          credentialsId: 'hithub-cred-d'
        }
      }
      stage('terraform-init') {
           steps {
-                
-
-          }
+                dir('terraformsetup') {
+                    sh '''
+                      terraform init 
+                      terraform apply --auto-approve
+                      '''
+                 }
+           }
       }
+
+          
+      
      
      stage('sonarqube-test-code') {
             steps {
