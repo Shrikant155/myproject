@@ -38,3 +38,14 @@ resource "aws_security_group" "shrik_sec_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+resource "aws_instance" "shrik_deploy_server" {
+    ami = "ami-05d62b9bc5a6ca605"
+    instance_type = "t3.medium"
+    key_name = "aws-ssh-key"
+    vpc_security_group_ids = [ aws_security_group.shrik_sec_group.id ]
+    
+    tags = {
+      Name ="deployment_server"
+    }
+
+}
