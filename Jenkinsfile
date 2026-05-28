@@ -6,9 +6,16 @@ pipeline {
        steps {
          git branch: 'main',
          url: 'https://github.com/Shrikant155/myproject.git',
-          credentialsId: 'github-cred-id'
+          credentialsId: 'hithub-cred-id'
        }
      }
+     stage('terraform-init') {
+          steps {
+                
+
+          }
+      }
+     
      stage('sonarqube-test-code') {
             steps {
                 withSonarQubeEnv('shrikant-sonar-scanner') {
@@ -38,7 +45,7 @@ pipeline {
 
       stage('docker push') { 
            steps {
-              withCredentials([usernamePassword(credentialsId: 'docker-hub-cred-id',
+              withCredentials([usernamePassword(credentialsId: 'dockerhub-cred-id',
                                                  usernameVariable: 'DOCKER_USER', 
                                                  passwordVariable: 'DOCKER_PASS')]) {
                sh '''
@@ -49,71 +56,6 @@ pipeline {
                 }
               }
       }
-stage('Start Minikube') {
-    steps {
-        sh '''
-            minikube delete --all --purge || true
-            minikube start --driver=docker --force --wait=all 
-            minikube status
-            kubectl apply -f deployment.yaml
-            kubectl apply -f service.yaml
-             # ✅ Fix 1 - correct deployment name
-          kubectl rollout status deployment/k8s-project --timeout=120s
-
-          # ✅ Fix 2 - wait until pod is READY
- kubectl wait --for=condition=ready pod \
-        -l app=myproject1 \
-        --timeout=120s
-            kubectl get pods 
-           kubectl get svc 
-            minikube service k8s-service --url || true 
-        '''
-    }
-  }
-     stage('dast-scan') { 
-      steps {
-          sh '''
-             # zap image install via docker 
-               docker pull ghcr.io/zaproxy/zaproxy:stable
-                #url of running app
-               APP_URL=$(minikube service k8s-service --url)
-                echo "Scanning app: $APP_URL"
- 
-          # Step 3 - Run ZAP scan and save report
-       rm -rf zap-reports || true
-      mkdir -p zap-reports
-
-      chmod 777 zap-reports
-
- docker run --rm \
-        --network=host \
-        -v $(pwd)/zap-reports:/zap/wrk/:rw \
-        -u root \
-        ghcr.io/zaproxy/zaproxy:stable \
-        zap-baseline.py \
-        -t $APP_URL \
-        -r zap-report.html \
-        -I
-
-      echo "ZAP Scan Done - Report saved in zap-reports/zap-report.html"
-                 
-       '''
-     }
-        post {
-    always {
-        publishHTML(target: [
-        allowMissing: true,
-        alwaysLinkToLastBuild: true,
-        keepAll: true,
-        reportDir: 'zap-reports',
-        reportFiles: 'zap-report.html',
-        reportName: 'ZAP Security Report'
-      ])
-    }
-  }
-
-
-     }
     
  }
 
