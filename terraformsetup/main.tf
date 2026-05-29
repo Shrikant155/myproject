@@ -9,34 +9,40 @@ terraform {
 provider "aws" {
   region = var.region
 }
+data "http" "my_ip" {
+url = "https://checkip.amazonaws.com"
+ }
 resource "aws_security_group" "shrik_sec_group" {
   ingress {
     description = "ssh"
     from_port = 22
     to_port = 22
     protocol = "tcp"
-      cidr_blocks=["0.0.0.0/0"] 
+      cidr_blocks=["${chomp(data.http.my_ip.response_body)}/32"] 
   }
   ingress {
     description = "http"
     from_port = 80
     to_port = 80
     protocol = "tcp"
-      cidr_blocks=["0.0.0.0/0"] 
+cidr_blocks=["${chomp(data.http.my_ip.response_body)}/32"] 
+      
   }
   ingress {
     description = "https"
     from_port = 443
     to_port = 443
     protocol = "tcp"
-      cidr_blocks=["0.0.0.0/0"] 
+cidr_blocks=["${chomp(data.http.my_ip.response_body)}/32"] 
+      
   }
 ingress {
     description = "nginx-unprivilged"
     from_port = 8080
     to_port = 8080
     protocol = "tcp"
-      cidr_blocks=["0.0.0.0/0"]
+cidr_blocks=["${chomp(data.http.my_ip.response_body)}/32"] 
+      
   }
 
 
